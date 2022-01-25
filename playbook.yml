@@ -1,0 +1,58 @@
+- name: Configure VDO
+  hosts: all
+  vars_files:
+    - vars/vdo_variables.yml
+  tasks: 
+    - name: Install vdo and kmod-kvdo
+      yum:
+        name:
+          - vdo
+          - kmod-kvdo
+        state: latest
+
+    - name: Start and enable service vdo
+      service:
+        name: vdo
+        state: started
+        enabled: yes
+
+    - name: Create VDO volume
+      vdo:
+        name: "{{ vdo_name }}"
+        state: present
+        device: "{{ device }}"
+        logicalsize: "{{ logical_size }}"
+
+
+- name: Configure LVM
+  hosts: all
+  vars_files:
+    - vars/lvm_variables.yml
+  tasks:
+    - name: Create Volume Group
+      lvg:
+        vg: "{{ vg_name }}"
+        pvs: "{{ vg_device }}"
+
+    - name: Create Logical Volumes
+      lvol:
+        vg: "{{ item.vgroup }}"
+        lv: "{{ item.name }}"
+        size: "{{ item.size }}"
+      loop: "{{ lvs }}"
+
+    - name: Format filesystem (XFS) on each LV
+      filesystem:
+        dev: "/dev/{{ item.vgroup }}/{{ item.name }}"
+        fstype: xfs
+      loop: "{{ lvs }}"
+
+    - name: Mount LVs
+      mount:
+        path: "{{ item.mount_point }}"
+        src: "/dev/{{ item.vgroup }}/{{ item.name }}"
+        fstype: xfs
+        opts: defaults,x-systemd.requires=vdo.service
+        state: mounted
+      loop: "{{ lvs }}"
+
