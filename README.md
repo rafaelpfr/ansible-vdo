@@ -18,7 +18,7 @@
 
 
 ## Hands On
-The idea for this project is the implementation of the following structure:
+The project uses CentOS 7 and its implementation follows the following structure:
 
 <p align="center">
   <img src="images/structure.png"/>
