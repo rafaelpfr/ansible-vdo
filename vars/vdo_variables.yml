@@ -1,0 +1,4 @@
+vdo_name: vdo1
+device: /dev/sdb    # device used for vdo
+logical_size: 24G
+

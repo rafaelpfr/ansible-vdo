@@ -1,0 +1,23 @@
+vg_name: volume_group
+vg_device: /dev/mapper/vdo1
+
+lvs:
+  - name: LV1
+    size: 512M
+    vgroup: volume_group
+    mount_point: /tmp/point1
+
+  - name: LV2
+    size: 512M
+    vgroup: volume_group
+    mount_point: /tmp/point2
+
+  - name: LV3
+    size: 512M
+    vgroup: volume_group
+    mount_point: /tmp/point3
+
+  - name: LV4
+    size: 512M
+    vgroup: volume_group
+    mount_point: /tmp/point4
